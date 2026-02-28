@@ -10,10 +10,8 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $filter = $_GET['filter'] ?? 'month';
 
-if ($filter == "month") {
-  $condition = "MONTH(from_date)=MONTH(CURDATE())
-                AND YEAR(from_date)=YEAR(CURDATE())";
-}
+$condition = "MONTH(from_date)=MONTH(CURDATE())
+              AND YEAR(from_date)=YEAR(CURDATE())";
 
 if ($filter == "prev") {
   $condition = "MONTH(from_date)=MONTH(CURDATE()-INTERVAL 1 MONTH)
@@ -34,27 +32,16 @@ ORDER BY from_date DESC
 ";
 
 $result = $conn->query($query);
+
+include("../includes/layout_top.php");
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-<title>Reports</title>
 
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
+<div class="topbar">
+  <div class="page-title">Leave Reports</div>
+  <a href="dashboard.php">← Back</a>
+</div>
 
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600&display=swap" rel="stylesheet">
-
-<style>
-body { font-family: 'Sora', sans-serif; background:#f3f4f6; }
-</style>
-
-</head>
-<body class="p-4">
-
-<h1 style="color:#363537" class="text-xl font-semibold mb-4">
-Leave Reports
-</h1>
-<select onchange="location = this.value;" class="border p-2 rounded mb-4">
+<select onchange="location = this.value;" class="input">
 
   <option value="?filter=month" <?= $filter=='month'?'selected':'' ?>>
     Current Month
@@ -69,26 +56,37 @@ Leave Reports
   </option>
 
 </select>
-<?php while($row = $result->fetch_assoc()) { ?>
 
-<div class="bg-white p-4 rounded-xl shadow mb-3">
+<?php if ($result->num_rows > 0) { ?>
+  
+  <?php while($row = $result->fetch_assoc()) { ?>
 
-  <div class="font-semibold text-lg">
-    <?= $row['name'] ?>
-  </div>
+    <div class="card">
 
-  <div class="text-sm text-gray-600">
-    <?= $row['from_date'] ?> → <?= $row['to_date'] ?>
-  </div>
+      <div class="font-semibold">
+        <?= $row['name'] ?>
+      </div>
 
-  <?php if($row['notes']) { ?>
-    <div class="text-sm text-gray-500 mt-1">
-      <?= $row['notes'] ?>
+      <div class="text-sm" style="color:#666;">
+        <?= $row['from_date'] ?> → <?= $row['to_date'] ?>
+      </div>
+
+      <?php if($row['notes']) { ?>
+        <div class="text-sm" style="color:#999; margin-top:6px;">
+          <?= $row['notes'] ?>
+        </div>
+      <?php } ?>
+
     </div>
+
   <?php } ?>
 
-</div>
+<?php } else { ?>
+
+  <div class="card">
+    No leave records found for this period.
+  </div>
 
 <?php } ?>
-</body>
-</html>
+
+<?php include("../includes/layout_bottom.php"); ?>

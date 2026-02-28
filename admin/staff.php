@@ -2,37 +2,36 @@
 session_start();
 include("../config/db.php");
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
   header("Location: ../index.php");
   exit();
 }
 
-$user_id = $_SESSION['user_id'];
-
 $staff = $conn->query("
-  SELECT id, name
+  SELECT staff.name, users.name AS owner
   FROM staff
-  WHERE created_by = $user_id
-  ORDER BY name
+  JOIN users ON users.id = staff.created_by
+  ORDER BY staff.name
 ");
 
 include("../includes/layout_top.php");
 ?>
 
 <div class="topbar">
-  <div class="page-title">My Staff</div>
+  <div class="page-title">All Staff</div>
   <a href="dashboard.php">← Back</a>
 </div>
-
-<a href="add_staff.php" class="btn btn-primary">➕ Add Staff</a>
 
 <?php if ($staff->num_rows > 0) { ?>
 
   <?php while($row = $staff->fetch_assoc()) { ?>
 
-    <a href="apply_leave.php?staff_id=<?= $row['id'] ?>" class="card">
-      <?= $row['name'] ?>
-    </a>
+    <div class="card">
+      <div class="font-semibold"><?= $row['name'] ?></div>
+      <div class="text-sm" style="color:#777;">
+        Added by: <?= $row['owner'] ?>
+      </div>
+    </div>
 
   <?php } ?>
 
