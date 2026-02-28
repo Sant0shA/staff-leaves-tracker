@@ -149,6 +149,8 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
   font-family: 'Syne', sans-serif;
   font-size: 22px;
   font-weight: 800;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
 }
 
 .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-weight: 500; }
@@ -318,13 +320,14 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
 .fab {
   position: fixed;
   bottom: 90px;
-  right: calc(50% - 220px + 20px);
+  right: 20px;
   width: 54px; height: 54px;
   border-radius: 16px;
   background: var(--accent);
   border: none;
   color: #fff;
-  font-size: 26px;
+  font-size: 28px;
+  font-weight: 300;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 8px 24px rgba(59,111,232,0.35);
@@ -332,6 +335,11 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
   z-index: 100;
   text-decoration: none;
   line-height: 1;
+}
+
+/* On wider screens, keep FAB inside the app container */
+@media (min-width: 440px) {
+  .fab { right: calc(50% - 200px); }
 }
 
 .fab:hover { transform: scale(1.07); box-shadow: 0 12px 28px rgba(59,111,232,0.45); }

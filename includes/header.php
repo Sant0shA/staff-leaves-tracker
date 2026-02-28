@@ -1,6 +1,5 @@
 <?php
 // includes/header.php
-// Usage: include at top of every page AFTER setting $pageTitle and $backUrl (optional)
 $pageTitle = $pageTitle ?? 'TrackLeaves';
 $backUrl   = $backUrl   ?? null;
 $subTitle  = $subTitle  ?? null;
@@ -10,7 +9,7 @@ $subTitle  = $subTitle  ?? null;
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <meta name="theme-color" content="#0D0F14">
+  <meta name="theme-color" content="#F0F4FF">
   <title><?= htmlspecialchars($pageTitle) ?> — TrackLeaves</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,7 +35,8 @@ $subTitle  = $subTitle  ?? null;
       <?php if (isAdmin()): ?>
         <span class="badge badge-admin">⚡ Admin</span>
       <?php endif; ?>
-      <a href="/logout.php" class="avatar <?= isAdmin() ? 'admin' : '' ?>" title="Logout">
+      <!-- Avatar now links to change password -->
+      <a href="/user/change_password.php" class="avatar <?= isAdmin() ? 'admin' : '' ?>" title="Account / Change Password">
         <?= initials(currentUserName()) ?>
       </a>
     </div>
