@@ -2,23 +2,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
+<title>TrackLeaves Login</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;500;600&display=swap" rel="stylesheet">
-<style>body{font-family:'Sora',sans-serif}</style>
+<link rel="stylesheet" href="assets/css/style.css">
+
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center h-screen">
+<body>
 
-<form method="POST" action="api/login.php" class="bg-white p-6 rounded-2xl shadow w-80">
-<h2 class="text-xl mb-4">TrackLeaves</h2>
+<div class="container center">
 
-<input name="email" placeholder="Email" class="border p-2 w-full mb-3">
-<input name="password" type="password" placeholder="Password" class="border p-2 w-full mb-3">
+<div class="card">
 
-<button class="bg-[#0CCE6B] w-full p-2 rounded-xl text-white">
-Login
-</button>
+<div class="page-title">TrackLeaves</div>
+
+<?php if(isset($_GET['error'])) { ?>
+  <div class="error">Invalid email or password ❌</div>
+<?php } ?>
+
+<form method="POST" action="api/login.php">
+
+<input name="email" placeholder="Email" class="input" required>
+
+<input name="password" type="password" placeholder="Password" class="input" required>
+
+<button class="btn btn-primary">Login</button>
 
 </form>
+
+</div>
+
+</div>
+
 </body>
 </html>
