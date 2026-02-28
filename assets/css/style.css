@@ -1,37 +1,102 @@
+/* ========== BASE ========== */
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Sora', sans-serif;
   background: #f3f4f6;
+  margin: 0;
+  color: #363537;
 }
 
-/* Layout */
+/* ========== LAYOUT ========== */
+
 .container {
   max-width: 420px;
   margin: auto;
   padding: 16px;
+  padding-bottom: 90px; /* space for FAB */
 }
 
-/* Card */
+/* ========== TYPOGRAPHY ========== */
+
+.page-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+
+.label {
+  font-size: 13px;
+  margin-bottom: 6px;
+  display: block;
+  color: #666;
+}
+
+/* ========== TOP BAR ========== */
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.topbar a {
+  text-decoration: none;
+  font-size: 14px;
+  color: #0CCE6B;
+  font-weight: 500;
+}
+
+/* ========== CARD ========== */
+
 .card {
+  display: block;
+  width: 100%;
   background: #ffffff;
   padding: 16px;
-  border-radius: 14px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  margin-bottom: 12px;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  margin-bottom: 14px;
+  text-decoration: none;
+  color: inherit;
+  transition: 0.2s ease;
 }
 
-/* Button */
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+/* clickable card feel */
+.card:active {
+  transform: scale(0.98);
+}
+
+/* ========== BUTTONS ========== */
+
 .btn {
   display: block;
   width: 100%;
   padding: 14px;
   border-radius: 12px;
   text-align: center;
-  font-weight: 500;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .btn-primary {
   background: #0CCE6B;
   color: white;
+}
+
+.btn-primary:hover {
+  background: #0bbf62;
 }
 
 .btn-dark {
@@ -44,26 +109,79 @@ body {
   color: white;
 }
 
-/* Input */
+/* ========== INPUTS ========== */
+
 .input {
   width: 100%;
-  padding: 12px;
-  border-radius: 10px;
+  padding: 13px;
+  border-radius: 12px;
   border: 1px solid #ddd;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  font-size: 14px;
+  transition: 0.2s ease;
+  background: #fff;
 }
 
-/* Page title */
-.page-title {
-  font-size: 18px;
+.input:focus {
+  outline: none;
+  border-color: #0CCE6B;
+  box-shadow: 0 0 0 3px rgba(12, 206, 107, 0.15);
+}
+
+/* ========== STATUS / ALERTS ========== */
+
+.success {
+  background: #e8fff1;
+  color: #0CCE6B;
+  padding: 14px;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  font-weight: 500;
+}
+
+.error {
+  background: #ffe9ec;
+  color: #EF2D56;
+  padding: 14px;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  font-weight: 500;
+}
+
+/* ========== FLOATING ACTION BUTTON ========== */
+
+.fab {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0CCE6B;
+  color: white;
+  padding: 14px 22px;
+  border-radius: 30px;
   font-weight: 600;
-  color: #363537;
-  margin-bottom: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+  text-decoration: none;
+  transition: 0.2s ease;
 }
 
-/* Top bar */
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 16px;
+.fab:active {
+  transform: translateX(-50%) scale(0.96);
+}
+
+/* ========== SMALL TEXT ========== */
+
+.text-sm {
+  font-size: 13px;
+  color: #777;
+}
+
+/* ========== UTILITIES ========== */
+
+.center {
+  text-align: center;
+}
+
+.mt-10 {
+  margin-top: 10px;
 }
