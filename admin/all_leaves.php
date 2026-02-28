@@ -1,17 +1,12 @@
 <?php
-// user/reports.php — Leave reports with filters
+// admin/all_leaves.php — Admin view of all leaves across all users
 require_once __DIR__ . '/../includes/db.php';
-requireLogin();
-if (isAdmin()) { header('Location: /admin/dashboard.php'); exit; }
+requireAdmin();
 
-$uid = currentUserId();
-
-// Filter tabs
-$filter = $_GET['filter'] ?? 'this_month';
+$filter  = $_GET['filter'] ?? 'this_month';
 $allowed = ['this_month', 'last_month', 'this_year'];
 if (!in_array($filter, $allowed)) $filter = 'this_month';
 
-// Build date range from filter
 switch ($filter) {
     case 'this_month':
         $dateFrom = date('Y-m-01');
@@ -30,29 +25,27 @@ switch ($filter) {
         break;
 }
 
-// Fetch leaves in range for this user's staff
 $stmt = $pdo->prepare("
-    SELECT l.*, s.name AS staff_name, s.designation
+    SELECT l.*, s.name AS staff_name, s.designation,
+           u.name AS user_name
     FROM leaves l
     JOIN staff s ON l.staff_id = s.id
-    WHERE l.user_id = ?
-      AND l.from_date <= ?
+    JOIN users  u ON l.user_id  = u.id
+    WHERE l.from_date <= ?
       AND l.to_date   >= ?
     ORDER BY l.from_date DESC
 ");
-$stmt->execute([$uid, $dateTo, $dateFrom]);
+$stmt->execute([$dateTo, $dateFrom]);
 $leaveList = $stmt->fetchAll();
 
-// Stats
 $totalEntries = count($leaveList);
 $totalDays    = 0;
 foreach ($leaveList as $l) {
     $d = (new DateTime($l['from_date']))->diff(new DateTime($l['to_date']));
     $totalDays += $d->days + 1;
 }
-$uniqueStaff = count(array_unique(array_column($leaveList, 'staff_id')));
 
-$pageTitle = 'Reports';
+$pageTitle = 'All Leaves';
 $subTitle  = $label;
 include __DIR__ . '/../includes/header.php';
 ?>
@@ -77,13 +70,12 @@ include __DIR__ . '/../includes/header.php';
       <div class="stat-label">Total Days</div>
     </div>
     <div class="stat-card">
-      <div class="stat-num" style="color:var(--success)"><?= $uniqueStaff ?></div>
+      <div class="stat-num" style="color:var(--success)"><?= count(array_unique(array_column($leaveList, 'staff_id'))) ?></div>
       <div class="stat-label">Staff</div>
     </div>
   </div>
 
-  <!-- Leave list -->
-  <div class="section-label">Leave Entries</div>
+  <div class="section-label">All Leave Entries</div>
 
   <?php if (empty($leaveList)): ?>
     <div class="empty">
@@ -100,25 +92,31 @@ include __DIR__ . '/../includes/header.php';
         <div style="flex:1">
           <div class="leave-name"><?= htmlspecialchars($l['staff_name']) ?></div>
           <div class="leave-dates"><?= $dr['label'] ?></div>
-          <?php if ($l['notes']): ?>
-            <div class="leave-notes"><?= htmlspecialchars($l['notes']) ?></div>
-          <?php endif; ?>
+          <div class="leave-notes">via <?= htmlspecialchars($l['user_name']) ?><?= $l['notes'] ? ' · ' . htmlspecialchars($l['notes']) : '' ?></div>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
-          <div class="leave-days"><?= $dr['days'] ?>d</div>
-          <a
-            href="/user/delete_leave.php?id=<?= $l['id'] ?>&filter=<?= $filter ?>"
-            onclick="return confirm('Delete this leave entry?')"
-            style="font-size:11px;color:var(--danger);text-decoration:none;"
-          >✕ Remove</a>
-        </div>
+        <div class="leave-days"><?= $dr['days'] ?>d</div>
       </div>
     <?php endforeach; ?>
   <?php endif; ?>
 
 </div>
 
-<?php
-$activeNav = 'reports';
-include __DIR__ . '/../includes/nav.php';
-?>
+<!-- Admin nav -->
+<nav class="bottom-nav">
+  <a href="/admin/dashboard.php" class="nav-item">
+    <span class="nav-icon">👥</span>
+    <span class="nav-label">Users</span>
+  </a>
+  <a href="/admin/all_leaves.php" class="nav-item active">
+    <span class="nav-icon">📋</span>
+    <span class="nav-label" style="color:var(--accent)">All Leaves</span>
+  </a>
+  <a href="/logout.php" class="nav-item">
+    <span class="nav-icon">🚪</span>
+    <span class="nav-label">Logout</span>
+  </a>
+</nav>
+
+</div>
+</body>
+</html>

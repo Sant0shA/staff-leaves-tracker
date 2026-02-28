@@ -1,53 +1,91 @@
 <?php
-session_start();
-include("../config/db.php");
+// user/dashboard.php — My Staff list
+require_once __DIR__ . '/../includes/db.php';
+requireLogin();
+if (isAdmin()) { header('Location: /admin/dashboard.php'); exit; }
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+$uid = currentUserId();
 
-if (!isset($_SESSION['user_id'])) {
-  header("Location: ../index.php");
-  exit();
-}
-
-$user_id = $_SESSION['user_id'];
-
-$staff = $conn->query("
-  SELECT id, name 
-  FROM staff 
-  WHERE created_by = $user_id
-  ORDER BY name
+// Fetch this user's staff + their active leave status
+$stmt = $pdo->prepare("
+    SELECT s.*,
+      (
+        SELECT COUNT(*) FROM leaves l
+        WHERE l.staff_id = s.id
+          AND CURDATE() BETWEEN l.from_date AND l.to_date
+      ) AS on_leave
+    FROM staff s
+    WHERE s.created_by = ?
+    ORDER BY s.name ASC
 ");
+$stmt->execute([$uid]);
+$staffList = $stmt->fetchAll();
 
-include("../includes/layout_top.php");
+// Stats
+$total    = count($staffList);
+$onLeave  = array_sum(array_column($staffList, 'on_leave'));
+$present  = $total - $onLeave;
+
+// Current month label
+$monthLabel = date('F Y');
+
+$pageTitle = 'Dashboard';
+$subTitle  = $monthLabel;
+include __DIR__ . '/../includes/header.php';
 ?>
 
-<div class="page-title">My Staff</div>
+<div class="scroll-area">
 
-<?php if(isset($_GET['success'])) { ?>
-  <div class="success">Staff added successfully ✅</div>
-<?php } ?>
-
-<?php if($staff->num_rows == 0) { ?>
-
-  <div class="card center">
-    No staff added yet
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--text)"><?= $total ?></div>
+      <div class="stat-label">Total Staff</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--warning)"><?= $onLeave ?></div>
+      <div class="stat-label">On Leave</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--success)"><?= $present ?></div>
+      <div class="stat-label">Present</div>
+    </div>
   </div>
 
-<?php } ?>
+  <!-- Staff list -->
+  <div class="section-label">My Staff</div>
 
-<?php while($row = $staff->fetch_assoc()) { ?>
+  <?php if (empty($staffList)): ?>
+    <div class="empty">
+      <div class="empty-icon">👥</div>
+      <div class="empty-text">No staff added yet</div>
+      <div class="empty-sub">Tap + to add your first staff member</div>
+    </div>
+  <?php else: ?>
+    <?php foreach ($staffList as $s):
+      $av = avatarColor($s['id']);
+    ?>
+      <a href="/user/apply_leave.php?staff_id=<?= $s['id'] ?>" class="staff-card">
+        <div class="staff-avatar" style="background:<?= $av['bg'] ?>;color:<?= $av['color'] ?>">
+          <?= initials($s['name']) ?>
+        </div>
+        <div class="staff-info">
+          <div class="staff-name"><?= htmlspecialchars($s['name']) ?></div>
+          <div class="staff-meta"><?= htmlspecialchars($s['designation'] ?? 'Staff') ?></div>
+        </div>
+        <span class="badge <?= $s['on_leave'] ? 'badge-leave' : 'badge-present' ?>">
+          <?= $s['on_leave'] ? 'On Leave' : 'Present' ?>
+        </span>
+      </a>
+    <?php endforeach; ?>
+  <?php endif; ?>
 
-  <a href="apply_leave.php?staff_id=<?= $row['id'] ?>" class="card">
-    <?= $row['name'] ?>
-  </a>
+</div><!-- /.scroll-area -->
 
-<?php } ?>
+<!-- FAB: Add Staff -->
+<a href="/user/add_staff.php" class="fab" title="Add Staff">+</a>
 
-<a href="add_staff.php" class="fab">＋ Add Staff</a>
-
-<a href="reports.php" class="card">📊 View Reports</a>
-
-<a href="../api/logout.php" class="card">🚪 Logout</a>
-
-<?php include("../includes/layout_bottom.php"); ?>
+<?php
+$activeNav = 'staff';
+include __DIR__ . '/../includes/nav.php';
+?>
