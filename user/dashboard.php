@@ -1,47 +1,19 @@
-<?php
-session_start();
-include("../config/db.php");
+<div class="page-title">My Staff</div>
 
-if (!isset($_SESSION['user_id'])) {
-  header("Location: ../index.php");
-  exit();
-}
+<?php if(isset($_GET['success'])) { ?>
+  <div class="success">Staff added successfully ✅</div>
+<?php } ?>
 
-$user_id = $_SESSION['user_id'];
+<?php while($row = $staff->fetch_assoc()) { ?>
 
-$staff = $conn->query("
-  SELECT id, name
-  FROM staff
-  WHERE created_by = $user_id
-  ORDER BY name
-");
-
-include("../includes/layout_top.php");
-?>
-
-<div class="topbar">
-  <div class="page-title">My Staff</div>
-  <a href="dashboard.php">← Back</a>
-</div>
-
-<a href="add_staff.php" class="btn btn-primary">➕ Add Staff</a>
-
-<?php if ($staff->num_rows > 0) { ?>
-
-  <?php while($row = $staff->fetch_assoc()) { ?>
-
-    <a href="apply_leave.php?staff_id=<?= $row['id'] ?>" class="card">
-      <?= $row['name'] ?>
-    </a>
-
-  <?php } ?>
-
-<?php } else { ?>
-
-  <div class="card">
-    No staff added yet.
-  </div>
+  <a href="apply_leave.php?staff_id=<?= $row['id'] ?>" class="card">
+    <?= $row['name'] ?>
+  </a>
 
 <?php } ?>
 
-<?php include("../includes/layout_bottom.php"); ?>
+<a href="add_staff.php" class="fab">＋ Add Staff</a>
+
+<a href="reports.php" class="card">📊 View Reports</a>
+
+<a href="../api/logout.php" class="card">🚪 Logout</a>
