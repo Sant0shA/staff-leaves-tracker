@@ -5,12 +5,16 @@ Options -Indexes
 # RewriteCond %{HTTPS} off
 # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# Redirect root to login
 RewriteEngine On
-RewriteRule ^$ /index.php [L]
 
-# Block direct access to includes folder
-RewriteRule ^includes/ - [F,L]
+# Allow CSS and other static assets in includes/ to load freely
+RewriteRule ^includes/.*\.(css|js|png|jpg|gif|woff|woff2)$ - [L]
+
+# Block direct access to PHP files in includes/ folder
+RewriteRule ^includes/.*\.php$ - [F,L]
+
+# Redirect bare root to login
+RewriteRule ^$ /index.php [L]
 
 # PHP session security
 php_value session.cookie_httponly 1
