@@ -31,12 +31,11 @@ $subTitle  = $subTitle  ?? null;
         <?php endif; ?>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;">
+    <div class="header-right">
       <?php if (isAdmin()): ?>
         <span class="badge badge-admin">⚡ Admin</span>
       <?php endif; ?>
-      <!-- Avatar now links to change password -->
-      <a href="/user/change_password.php" class="avatar <?= isAdmin() ? 'admin' : '' ?>" title="Account / Change Password">
+      <a href="/user/change_password.php" class="avatar <?= isAdmin() ? 'admin' : '' ?>" title="Account">
         <?= initials(currentUserName()) ?>
       </a>
     </div>

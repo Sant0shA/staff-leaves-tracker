@@ -40,7 +40,14 @@ body {
 /* ── TYPOGRAPHY ── */
 h1, h2, h3 { font-family: 'Syne', sans-serif; }
 
-.logo { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: -1px; }
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
 .logo span { color: var(--accent); }
 
 .section-label {
@@ -57,17 +64,38 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 20px 16px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--border);
   background: var(--surface);
   position: sticky;
   top: 0;
   z-index: 50;
   box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+  overflow: hidden;
 }
 
-.header-left { display: flex; align-items: center; gap: 10px; }
-.header-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.header-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 1px;
+  white-space: nowrap;
+}
 
 .back-btn {
   background: none;
@@ -77,18 +105,20 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
   cursor: pointer;
   padding: 4px 8px 4px 0;
   line-height: 1;
+  flex-shrink: 0;
 }
 
 /* ── AVATAR ── */
 .avatar {
-  width: 36px; height: 36px;
+  width: 34px; height: 34px;
   border-radius: 10px;
   background: var(--accent-soft);
   border: 1px solid var(--accent-glow);
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px;
   color: var(--accent);
   text-decoration: none;
+  flex-shrink: 0;
 }
 
 .avatar.admin {
@@ -196,7 +226,7 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
 
 .badge-present { background: var(--success-soft); color: var(--success); }
 .badge-leave   { background: var(--warning-soft); color: var(--warning); }
-.badge-admin   { background: var(--warning-soft); color: var(--warning); border: 1px solid rgba(217,119,6,0.25); }
+.badge-admin   { background: var(--warning-soft); color: var(--warning); border: 1px solid rgba(217,119,6,0.25); font-size: 11px; }
 
 /* ── FORMS ── */
 .form-wrap { padding: 20px; flex: 1; }
@@ -337,7 +367,6 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
   line-height: 1;
 }
 
-/* On wider screens, keep FAB inside the app container */
 @media (min-width: 440px) {
   .fab { right: calc(50% - 200px); }
 }
@@ -422,10 +451,7 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
 }
 
 /* ── EMPTY STATE ── */
-.empty {
-  text-align: center;
-  padding: 56px 24px;
-}
+.empty { text-align: center; padding: 56px 24px; }
 .empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
 .empty-text { font-size: 15px; color: var(--text-muted); font-weight: 500; }
 .empty-sub  { font-size: 13px; color: var(--text-dim); margin-top: 6px; }
@@ -440,7 +466,35 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
   background: var(--bg);
 }
 
-.login-sub { color: var(--text-muted); font-size: 13px; margin-top: 6px; margin-bottom: 48px; }
+.login-sub { color: var(--text-muted); font-size: 13px; margin-top: 8px; margin-bottom: 40px; }
+
+/* ── LOGIN LOGO BLOCK ── */
+.login-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 4px;
+}
+
+.login-logo-icon {
+  width: 56px; height: 56px;
+  border-radius: 18px;
+  background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 24px rgba(59,111,232,0.28);
+  flex-shrink: 0;
+}
+
+.login-logo-text {
+  font-family: 'Syne', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.login-logo-text span { color: var(--accent); }
 
 /* ── SECTION ROW ── */
 .section-row {
