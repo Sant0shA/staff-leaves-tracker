@@ -3,7 +3,6 @@
 require_once __DIR__ . '/../includes/db.php';
 requireAdmin();
 
-// All users (non-admin)
 $users = $pdo->query("
     SELECT u.*,
       (SELECT COUNT(*) FROM staff s WHERE s.created_by = u.id) AS staff_count,
@@ -13,7 +12,6 @@ $users = $pdo->query("
     ORDER BY u.name ASC
 ")->fetchAll();
 
-// Global stats
 $totalUsers  = count($users);
 $totalStaff  = $pdo->query("SELECT COUNT(*) FROM staff")->fetchColumn();
 $totalLeaves = $pdo->query("SELECT COUNT(*) FROM leaves WHERE MONTH(from_date)=MONTH(CURDATE()) AND YEAR(from_date)=YEAR(CURDATE())")->fetchColumn();
@@ -51,6 +49,7 @@ include __DIR__ . '/../includes/header.php';
     <div class="section-label" style="margin:0">All Users</div>
     <a href="/admin/add_user.php" class="btn-sm">+ Add User</a>
   </div>
+
   <div style="margin-top:12px;">
     <?php if (empty($users)): ?>
       <div class="empty">
@@ -66,11 +65,16 @@ include __DIR__ . '/../includes/header.php';
           <div class="staff-avatar" style="background:<?= $av['bg'] ?>;color:<?= $av['color'] ?>">
             <?= initials($u['name']) ?>
           </div>
-          <div style="flex:1">
-            <div style="font-weight:500;font-size:15px;"><?= htmlspecialchars($u['name']) ?></div>
-            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;"><?= htmlspecialchars($u['email']) ?></div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:600;font-size:15px;"><?= htmlspecialchars($u['name']) ?></div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><?= htmlspecialchars($u['email']) ?></div>
+            <!-- Reset password link -->
+            <a href="/admin/reset_user_password.php?user_id=<?= $u['id'] ?>"
+               style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:500;margin-top:4px;display:inline-block;">
+              🔑 Reset Password
+            </a>
           </div>
-          <div style="text-align:right;">
+          <div style="text-align:right;flex-shrink:0;">
             <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--accent)"><?= $u['staff_count'] ?></div>
             <div style="font-size:11px;color:var(--text-dim)">staff</div>
           </div>
@@ -97,6 +101,4 @@ include __DIR__ . '/../includes/header.php';
   </a>
 </nav>
 
-</div><!-- /.app -->
-</body>
-</html>
+</div></body></html>
